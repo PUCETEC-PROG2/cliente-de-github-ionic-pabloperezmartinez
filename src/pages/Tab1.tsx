@@ -1,9 +1,31 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import { IonList } from '@ionic/react';
-import './Tab1.css';
-import RepoItem from '../components/RepoItem';
+import {
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+  useIonViewDidEnter,
+} from "@ionic/react";
+import { IonList } from "@ionic/react";
+import "./Tab1.css";
+import RepoItem from "../components/RepoItem";
+import React from "react";
+import { RepositoryItem } from "../interfaces/RepositoryItem";
+import { fetchRepositories } from "../services/GithubService";
 
 const Tab1: React.FC = () => {
+  const [repos, setRepos] = React.useState<RepositoryItem[]>([]);
+
+  const loadRepos = async () => {
+    const reposData = await fetchRepositories();
+    setRepos(reposData);
+  };
+
+  useIonViewDidEnter(() => {
+    console.log("******* Leyendo repositorios ... *******");
+    loadRepos();
+  });
+
   return (
     <IonPage>
       <IonHeader>
@@ -18,9 +40,16 @@ const Tab1: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonList>
-          <RepoItem name="Repositorio 1" imageUrl="https://static.thenounproject.com/png/55430-200.png" />
-          <RepoItem name="Repositorio 2" />
-          <RepoItem name="Repositorio 3" imageUrl="https://static.thenounproject.com/png/390267-200.png" />
+          {repos.map((repo, index) => (
+            <RepoItem
+              key={index}
+              name={repo.name}
+              description={repo.description}
+              imageUrl={repo.imageUrl}
+              owner={repo.owner}
+              language={repo.language}
+            />
+          ))}
         </IonList>
       </IonContent>
     </IonPage>
