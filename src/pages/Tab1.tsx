@@ -1,9 +1,24 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import React from 'react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewDidEnter } from '@ionic/react';
 import { IonList } from '@ionic/react';
 import './Tab1.css';
 import RepoItem from '../components/RepoItem';
+import { RepositoryItem } from '../interfaces/RepositoryItem';
+import { fetchRepositories } from '../services/GithubService';
 
 const Tab1: React.FC = () => {
+  const [repos, setRepos] = React.useState<RepositoryItem[]>([]);
+
+  const loadRepos = async () => {
+    const reposData = await fetchRepositories();
+    setRepos(reposData);
+  }
+
+  useIonViewDidEnter(() => {
+    console.log("***** Cargando repositorios *******");
+    loadRepos();
+  })
+
   return (
     <IonPage>
       <IonHeader>
@@ -18,9 +33,9 @@ const Tab1: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonList>
-          <RepoItem name="Repositorio 1" imageUrl="https://static.thenounproject.com/png/55430-200.png" />
-          <RepoItem name="Repositorio 2" />
-          <RepoItem name="Repositorio 3" imageUrl="https://static.thenounproject.com/png/390267-200.png" />
+          {repos.map((repo, index) => (
+            <RepoItem key={index} repo={repo} />
+          ))}
         </IonList>
       </IonContent>
     </IonPage>
