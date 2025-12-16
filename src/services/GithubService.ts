@@ -1,8 +1,9 @@
 import axios from "axios";
 import { RepositoryItem } from "../interfaces/RepositoryItem";
+import { UserInfo } from "../interfaces/UserInfo";
 
-const GITHUB_API_URL = "https://api.github.com";
-const GITHUB_API_TOKEN = "ghp_XXXXXXXXXXXXXXXXXXXXXXX"; // Remplazar con un token válido
+const GITHUB_API_URL = import.meta.env.VITE_GITHUB_API_URL || "https://api.github.com";
+const GITHUB_API_TOKEN = import.meta.env.VITE_GITHUB_API_TOKEN || "";
 
 /**
  * Obtener repositorios del usuario autenticado
@@ -51,5 +52,19 @@ export const createRepository = async (repo : RepositoryItem): Promise<void> => 
     console.log("Repositorio ingresado ", response.data);
   } catch (error) {
     console.error("Error creating repository:", error);
+  }
+};
+
+export const getUserInfo = async (): Promise<UserInfo | null> => {
+  try {
+    const response = await axios.get(`${GITHUB_API_URL}/user`, {
+      headers: {
+        Authorization: `Bearer ${GITHUB_API_TOKEN}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    return null;
   }
 };
