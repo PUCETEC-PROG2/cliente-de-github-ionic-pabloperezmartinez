@@ -13,3 +13,9 @@
 	width: 100%;
 	max-width: 640px; /* Limita el ancho para mejor lectura */
 }
+
+.logout-button {
+	width: 100%;
+	max-width: 640px;
+	margin-top: 20px;
+}

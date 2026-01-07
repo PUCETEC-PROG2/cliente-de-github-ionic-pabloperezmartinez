@@ -1,10 +1,14 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewDidEnter } from '@ionic/react';
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/react';
+import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonButton, IonIcon } from '@ionic/react';
+import { logOutOutline } from 'ionicons/icons';
+import { useHistory } from 'react-router-dom';
 import './Tab3.css';
 import { useState } from 'react';
 import { getUserInfo } from '../services/GithubService';
+import AuthService from '../services/AuthService';
 
 const Tab3: React.FC = () => {
+  const history = useHistory();
   const [userInfo, setUserInfo] = useState({
     name: 'No se puede cargar el usuario',
     username: 'no-username',
@@ -23,6 +27,11 @@ const Tab3: React.FC = () => {
       });
     }
   }
+
+  const handleLogout = () => {
+    AuthService.logout();
+    history.replace('/login');
+  };
 
   useIonViewDidEnter(() => {
     loadUserInfo();
@@ -50,6 +59,16 @@ const Tab3: React.FC = () => {
             </IonCardHeader>
             <IonCardContent>{userInfo.bio}</IonCardContent>
           </IonCard>
+          
+          <IonButton 
+            expand="block" 
+            color="danger" 
+            onClick={handleLogout}
+            className="logout-button"
+          >
+            <IonIcon slot="start" icon={logOutOutline} />
+            Cerrar Sesión
+          </IonButton>
         </div>
       </IonContent>
     </IonPage>
