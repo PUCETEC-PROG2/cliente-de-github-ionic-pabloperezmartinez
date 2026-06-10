@@ -2,13 +2,16 @@ import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewDidEnte
 import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonButton, IonIcon } from '@ionic/react';
 import { logOutOutline } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
-import './Tab3.css';
 import { useState } from 'react';
 import { getUserInfo } from '../services/GithubService';
 import AuthService from '../services/AuthService';
+import './Tab3.css';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Tab3: React.FC = () => {
   const history = useHistory();
+  const [loading, setLoading] = useState(false);
+
   const [userInfo, setUserInfo] = useState({
     name: 'No se puede cargar el usuario',
     username: 'no-username',
@@ -17,6 +20,7 @@ const Tab3: React.FC = () => {
   });
 
   const loadUserInfo = async () => {
+    setLoading(true);
     const response = await getUserInfo();
     if (response) {
       setUserInfo({
@@ -26,6 +30,7 @@ const Tab3: React.FC = () => {
         avatar_url: response.avatar_url || 'https://ionicframework.com/docs/img/demos/card-media.png'
       });
     }
+    setLoading(false);
   }
 
   const handleLogout = () => {
@@ -70,6 +75,7 @@ const Tab3: React.FC = () => {
             Cerrar Sesión
           </IonButton>
         </div>
+        <LoadingSpinner isOpen={loading}/>
       </IonContent>
     </IonPage>
   );

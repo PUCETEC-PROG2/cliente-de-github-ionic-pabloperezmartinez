@@ -1,11 +1,13 @@
-import { IonButton, IonContent, IonHeader, IonPage, IonTextarea, IonTitle, IonToolbar } from '@ionic/react';
-import { IonInput } from '@ionic/react';
-import './Tab2.css';
+import { useState } from 'react';
+import { IonButton, IonContent, IonHeader, IonPage, IonTextarea, IonTitle, IonToolbar, IonInput } from '@ionic/react';
 import { useHistory } from 'react-router';
 import { RepositoryItem } from '../interfaces/RepositoryItem';
 import { createRepository } from '../services/GithubService';
+import LoadingSpinner from '../components/LoadingSpinner';
+import './Tab2.css';
 
 const Tab2: React.FC = () => {
+  const [loading, setLoading] = useState(false);
 
   const history = useHistory();
 
@@ -26,6 +28,7 @@ const Tab2: React.FC = () => {
   };
 
   const saveRepo = () => {
+    setLoading(true);
     console.log("Guardando repositorio ", repoFormData);
     if (repoFormData.name.trim() === '') {
       alert("El nombre del repositorio es obligatorio");
@@ -35,6 +38,8 @@ const Tab2: React.FC = () => {
       history.push('/tab1');
     }).catch((error) => {
       console.error("Error al crear el repositorio ", error);
+    }).finally(() => {
+      setLoading(false);
     });
   };
   return (
@@ -75,6 +80,7 @@ const Tab2: React.FC = () => {
             Guardar
           </IonButton>
         </div>
+        <LoadingSpinner isOpen={loading}/>
       </IonContent>
     </IonPage>
   );
